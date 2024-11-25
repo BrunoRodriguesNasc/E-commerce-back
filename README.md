@@ -1,136 +1,182 @@
-# API Go com Docker e PostgreSQL
+# E-commerce API em Go
 
-Uma API RESTful desenvolvida em Go, utilizando Docker para containerização e PostgreSQL como banco de dados.
+API RESTful de e-commerce desenvolvida em Go, utilizando PostgreSQL como banco de dados.
+
+## 🚀 Tecnologias
+
+- Go 1.21
+- PostgreSQL 15
+- Docker & Docker Compose
+- Air (Hot Reload)
 
 ## 📁 Estrutura do Projeto
 
 ```
-├── controllers/ # Controladores da aplicação
-├── models/ # Modelos de dados
-├── routes/ # Definição das rotas da API
-├── database/ # Configurações do banco de dados
-├── main.go # Arquivo principal
-├── Dockerfile # Configuração do container
-└── docker-compose.yml
+├── cmd/
+│   └── main.go                 # Ponto de entrada da aplicação
+├── internal/
+│   ├── controllers/            # Lógica de negócios
+│   ├── models/                 # Estruturas de dados
+│   ├── repositories/           # Camada de acesso ao banco
+│   └── routes/                 # Configuração de rotas
+├── pkg/
+│   └── database/              # Configuração do banco
+├── migrations/                # Scripts SQL
+├── scripts/                   # Scripts auxiliares
+├── Dockerfile                # Configuração do container
+└── docker-compose.yml        # Orquestração dos serviços
 ```
 
-## 🚀 Tecnologias Utilizadas
+## 🛠️ Instalação
 
-- [Go](https://golang.org/) (1.22)
-- [Docker](https://www.docker.com/)
-- [PostgreSQL](https://www.postgresql.org/) (15)
-- [Docker Compose](https://docs.docker.com/compose/)
-
-## 🔧 Requisitos
+### Pré-requisitos
 
 - Docker
 - Docker Compose
-- Go (para desenvolvimento local)
+- Go 1.21+ (para desenvolvimento local)
 
-## ⚡ Início Rápido
+### Configuração
 
-1. **Clone o repositório**
-```
-git clone [URL_DO_SEU_REPOSITORIO]
-cd [NOME_DO_PROJETO]
-```
-
-2. **Inicie os containers**
-```
-docker-compose up --build
+1. Clone o repositório:
+```bash
+git clone https://github.com/seu-usuario/e-commerce.git
+cd e-commerce
 ```
 
-3. **Acesse a API**
+2. Inicie os containers:
+```bash
+docker-compose up -d
+```
+
+3. A API estará disponível em:
 ```
 http://localhost:3000
 ```
 
-## 🗄️ Configuração do Banco de Dados
+## 📡 Endpoints
 
-### PostgreSQL
-- **Host:** localhost
-- **Porta:** 5432
-- **Usuário:** postgres
-- **Senha:** postgres
-- **Database:** ecommerce
+### Produtos
 
-## 🛠️ Comandos Docker
-
-```
-# Iniciar os serviços
-docker-compose up -d
-
-# Parar os serviços
-docker-compose down
-
-# Visualizar logs
-docker-compose logs -f
-
-# Reiniciar um serviço específico
-docker-compose restart backend
-
-# Remover containers e volumes
-docker-compose down -v
+#### Listar todos os produtos
+```http
+GET /products
 ```
 
-## 💻 Desenvolvimento
+#### Criar novo produto
+```http
+POST /products
+Content-Type: application/json
+
+{
+    "name": "Product Name",
+    "description": "Product Description",
+    "price": 29.99,
+    "rating": 4.5,
+    "size": "M",
+    "reviews": ["Great product!", "Love it!"],
+    "image": "https://example.com/image.jpg"
+}
+```
+
+## 🗄️ Banco de Dados
+
+### Estrutura da tabela
+
+```sql
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    rating DECIMAL(3,2) DEFAULT 0.0,
+    size VARCHAR(255) DEFAULT 'M',
+    reviews TEXT[] DEFAULT '{}',
+    image VARCHAR(255)
+);
+```
+
+### Comandos Úteis
+
+```bash
+# Conectar ao banco
+docker-compose exec db psql -U postgres -d ecommerce
+
+# Listar tabelas
+\dt
+
+# Sair do psql
+\q
+```
+
+## 🔧 Desenvolvimento
 
 ### Hot Reload
-O código fonte está montado como volume no container para permitir hot reload durante o desenvolvimento:
-```
-volumes:
-  - ./:/app
+
+O projeto usa Air para hot reload durante o desenvolvimento:
+
+```bash
+# Iniciar com hot reload
+docker-compose up
 ```
 
-### Endpoints da API
-- `GET /`: Hello World (teste de conexão)
-- [Adicione outros endpoints conforme desenvolver]
+### Logs
+
+```bash
+# Ver logs em tempo real
+docker-compose logs -f
+
+# Ver logs específicos
+docker-compose logs -f backend
+docker-compose logs -f db
+```
 
 ## 🧪 Testes
 
-[Adicione instruções para executar testes quando implementados]
+```bash
+# Executar testes
+go test ./...
+
+# Com cobertura
+go test -cover ./...
+```
 
 ## 📦 Build
 
-Para construir a aplicação localmente:
-```
-go build -o main .
-```
+```bash
+# Build local
+go build -o app cmd/main.go
 
-Para construir a imagem Docker:
-```
-docker build -t nome-da-sua-app .
+# Build com Docker
+docker build -t ecommerce-api .
 ```
 
 ## 🔐 Variáveis de Ambiente
 
-[Liste as variáveis de ambiente necessárias quando implementadas]
-
-## 📚 Documentação da API
-
-[Adicione links ou informações sobre a documentação da API quando disponível]
+```env
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=ecommerce
+```
 
 ## 🤝 Contribuindo
 
-1. Faça o fork do projeto
-2. Crie sua feature branch (`git checkout -b feature/AmazingFeature`)
+1. Fork o projeto
+2. Crie sua branch de feature (`git checkout -b feature/AmazingFeature`)
 3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
 ## 📝 Licença
 
-Este projeto está sob a licença [SUA_LICENCA].
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 👨‍💻 Autor
+## 👥 Autores
 
-Seu Nome - [@seu-username](https://github.com/seu-username)
+* **Seu Nome** - *Trabalho Inicial* - [SeuUsuario](https://github.com/SeuUsuario)
 
-## 🙏 Agradecimentos
+## 🎉 Agradecimentos
 
-- Mencione pessoas ou projetos que ajudaram
-- Inspirações
-- Referências
-
----
-⌨️ com ❤️ por [seu-nome](https://github.com/seu-username)
+* Documentação Go
+* Comunidade Go
+* Contribuidores
