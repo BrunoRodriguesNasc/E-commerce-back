@@ -12,8 +12,7 @@ API RESTful de e-commerce desenvolvida em Go, utilizando PostgreSQL como banco d
 ## 📁 Estrutura do Projeto
 
 ```
-├── cmd/
-│   └── main.go                 # Ponto de entrada da aplicação
+├──main.go                      # Ponto de entrada da aplicação
 ├── internal/
 │   ├── controllers/            # Lógica de negócios
 │   ├── models/                 # Estruturas de dados
