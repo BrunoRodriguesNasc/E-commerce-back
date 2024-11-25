@@ -4,11 +4,18 @@ services:
     build:
       context: .
     ports:
-      - "3000:3000" # Porta para acessar o backend
+      - "3000:3000"
     volumes:
-      - ./:/app # Para desenvolvimento (hot reload)
+      - .:/app
+    working_dir: /app
+    environment:
+      - GO111MODULE=on
+      - POSTGRES_PASSWORD=postgres
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
 
   db:
     image: postgres:15
@@ -18,9 +25,21 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ecommerce
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
 
 volumes:
   db_data:
+
+networks:
+  app-network:
+    driver: bridge

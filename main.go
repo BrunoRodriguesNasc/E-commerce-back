@@ -1,17 +1,23 @@
 package main
 
 import (
+	"e-commerce/internal/routes"
+	"e-commerce/pkg/database"
 	"fmt"
+	"log"
 	"net/http"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, World!")
-	})
+	// Inicializa conexão com banco
+	db := database.Connect()
+	defer database.Close(db)
+
+	// Setup rotas
+	router := routes.SetupRoutes()
 
 	fmt.Println("Server starting on port 3000...")
-	if err := http.ListenAndServe(":3000", nil); err != nil {
-		panic(err)
+	if err := http.ListenAndServe(":3000", router); err != nil {
+		log.Fatal(err)
 	}
 }
