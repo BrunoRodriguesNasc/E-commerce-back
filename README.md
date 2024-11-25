@@ -21,7 +21,6 @@ API RESTful de e-commerce desenvolvida em Go, utilizando PostgreSQL como banco d
 ├── pkg/
 │   └── database/              # Configuração do banco
 ├── migrations/                # Scripts SQL
-├── scripts/                   # Scripts auxiliares
 ├── Dockerfile                # Configuração do container
 └── docker-compose.yml        # Orquestração dos serviços
 ```
